@@ -30,7 +30,7 @@ export default function TextInputs({
         />
         {isSecurity && (
           <TouchableOpacity
-            style={{paddingHorizontal:10}}
+            style={{paddingHorizontal: 10}}
             onPress={() => {
               setsecurePassword(!securePassword);
             }}>

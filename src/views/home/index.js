@@ -12,6 +12,10 @@ import Icons from '../../components/atoms/Icons';
 import {addList, profileHistory, userprofil} from '../../Database';
 import LinearGradient from 'react-native-linear-gradient';
 import ViewMoreText from 'react-native-view-more-text';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {uploadImage} from '../../components/Image-Profil-User';
+import {useIsFocused} from '@react-navigation/native';
 const icon = [
   <Icons type={'Octicons'} name={'diff-added'} size={20} color={'black'} />,
   <Icons type={'AntDesign'} name={'hearto'} size={20} color={'black'} />,
@@ -23,17 +27,41 @@ const icon = [
   />,
 ];
 export default function Home({navigation}) {
+  const isFocused = useIsFocused();
+  const [profiles, setprofile] = useState('');
   const [selectindex, setselectindex] = useState({});
-  // console.log('select', selectindex);
   const [ItemsData, setItemsData] = useState([]);
-  // console.log(ItemsData);
+
   useEffect(() => {
-    var newList = addList.map((x, i) => {
-      x['selected'] = false;
-      return x;
-    });
-    setItemsData(newList);
-  }, []);
+    if (isFocused) {
+      ambildata();
+    }
+  }, [isFocused]);
+
+  const ambildata = async () => {
+    const data = await AsyncStorage.getItem('setProfile');
+    setprofile(data);
+  };
+
+  const remove = async () => {
+    setprofile('');
+    await AsyncStorage.removeItem('setProfile');
+  };
+
+  const onUplodaProfile = async () => {
+    var images = await uploadImage();
+    console.log('images', images);
+    await AsyncStorage.setItem('setProfile', images.assets[0].base64);
+    setprofile(images.assets[0].base64);
+  };
+
+  // useEffect(() => {
+  //   var newList = addList.map((x, i) => {
+  //     x['selected'] = false;
+  //     return x;
+  //   });
+  //   setItemsData(newList);
+  // }, []);
 
   const onChangeIndex = (items, index) => {
     var newadata = [...ItemsData];
@@ -73,13 +101,39 @@ export default function Home({navigation}) {
           style={styles.scrolhorizontal}
           showsHorizontalScrollIndicator={false}>
           <View style={{}}>
-            <Image
+            <TouchableOpacity onPress={onUplodaProfile}>
+              <Image
+                source={{uri: 'data:image/png;base64,' + profiles}}
+                style={{
+                  height: 85,
+                  width: 85,
+                  borderRadius: 100,
+                  backgroundColor: 'red',
+                }}
+              />
+            </TouchableOpacity>
+
+            {/* <AvatarUser
+              atas={
+                <Icons
+                  type={'Ionicons'}
+                  name={'ios-add-circle-sharp'}
+                  size={25}
+                  color={'blue'}
+                />
+              }
+              style={styles.story}
+              styleIconAdd={{position: 'absolute', bottom: 5, left: 20}}
+              source={{uri: 'data:image/png;base64,' + profiles}}
+            /> */}
+            {/* <Image
               source={{
                 uri: userprofil.profil,
               }}
               style={styles.story}
-            />
-            <Text style={{position: 'absolute', bottom: 40, left: 60}}>
+            /> */}
+            <Text style={{paddingTop: 10}}>Cerita Anda</Text>
+            {/* <Text style={{position: 'absolute', bottom: 40, left: 60}}>
               <Icons
                 type={'Ionicons'}
                 name={'ios-add-circle-sharp'}
@@ -87,14 +141,15 @@ export default function Home({navigation}) {
                 color={'blue'}
               />
               ,
-            </Text>
+            </Text> */}
           </View>
-          {[...profileHistory, ...profileHistory, ...profileHistory].map(
-            (item, index) => {
-              return (
-                <View
-                  key={index}
-                  style={{marginHorizontal: 8, alignItems: 'center'}}>
+          {profileHistory.map((item, index) => {
+            return (
+              <View
+                key={index}
+                style={{marginHorizontal: 8, alignItems: 'center'}}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('StatusFolowers', item)}>
                   <LinearGradient
                     colors={['white', 'blue', 'red', 'navy', 'yellow', 'red']}
                     start={{x: 0.0, y: 1.0}}
@@ -105,146 +160,62 @@ export default function Home({navigation}) {
                     }}>
                     <Image source={{uri: item.profil}} style={styles.profil} />
                   </LinearGradient>
-                  <Text style={{paddingVertical: 5}}>{item.name}</Text>
-                </View>
-              );
-            },
-          )}
-        </ScrollView>
-
-        <View>
-          {ItemsData.map((items, index) => {
-            return (
-              <View key={index}>
-                <View style={styles.getuser}>
-                  {items.profil.map((p, pi) => {
-                    return (
-                      <View key={pi}>
-                        <TouchableOpacity
-                          onPress={() => navigation.navigate('LookUser', p)}
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-
-                            width: 330,
-                          }}>
-                          <LinearGradient
-                            colors={[
-                              'white',
-                              'blue',
-                              'red',
-                              'navy',
-                              'yellow',
-                              'red',
-                            ]}
-                            start={{x: 0.0, y: 1.0}}
-                            end={{x: 1.0, y: 1.0}}
-                            style={styles.gradiand}>
-                            <Image
-                              source={{uri: p.photo}}
-                              style={styles.imguser}
-                            />
-                          </LinearGradient>
-                          <Text style={{paddingLeft: 20}}>{p.name}</Text>
-                        </TouchableOpacity>
-                      </View>
-                    );
-                  })}
-
-                  <Text>{items.icons}</Text>
-                </View>
-                <View>
-                  {items.ststus.map((sItem, sindex) => {
-                    return (
-                      <View key={sindex}>
-                        <Image
-                          source={{uri: sItem.picture}}
-                          style={styles.picture}
-                        />
-                      </View>
-                    );
-                  })}
-                </View>
-                <View style={{paddingHorizontal: 17, marginRight: 30}}>
-                  <View style={{paddingVertical: 7}}>
-                    {items.character.map((i, x) => {
-                      console.log(i);
-                      return (
-                        <View key={x} style={styles.character}>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                            }}>
-                            <Text>{i.icon2}</Text>
-                            {/* <Text style={{paddingHorizontal: 15}}>
-                              {i.icon2}
-                            </Text> */}
-                            {/* <Text style={{}}>{i.icon3}</Text> */}
-                          </View>
-                          {/* <Text style={{}}>{i.icon4}</Text> */}
-                        </View>
-                      );
-                    })}
-                  </View>
-                  <View>
-                    {items.moments.map((moment, mi) => {
-                      return (
-                        <View key={mi}>
-                          <Text>{moment.others}</Text>
-                          <View
-                            style={
-                              {
-                                // backgroundColor: 'red',
-                                // flexDirection: 'row',
-                                // width: '100%',
-                                // alignmoments: 'center',
-                              }
-                            }>
-                            <Text
-                              style={{flex: 1, textAlign: 'justify'}}
-                              // numberOfLines={2}
-                            >
-                              <Text>
-                                {items.selected
-                                  ? moment.notif
-                                  : moment.notif.substring(82, '')}
-                              </Text>{' '}
-                              <Text
-                                onPress={() => onChangeIndex(items, index)}
-                                style={{color: 'red'}}>
-                                {items.selected ? ' Hidden' : 'View more'}
-                              </Text>
-                            </Text>
-                          </View>
-                          <Text>View all {moment.addcomend} comments</Text>
-                        </View>
-                      );
-                    })}
-                  </View>
-                </View>
-                <View style={{padding: 15}}>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Image
-                      source={{uri: userprofil.profil}}
-                      style={{
-                        height: 60,
-                        width: 60,
-                        borderRadius: 100,
-                      }}
-                    />
-                    <TextInput
-                      placeholder="Tambahkan Komentar..."
-                      style={{paddingLeft: 20}}
-                      // onFocus={first(true)}
-                    />
-                  </View>
-                  <Text>2 hari yang lalu</Text>
-                </View>
+                </TouchableOpacity>
+                <Text style={{paddingVertical: 5}}>{item.name}</Text>
               </View>
             );
           })}
-        </View>
+        </ScrollView>
+        {profileHistory.map((item, index) => {
+          return (
+            <View key={index} style={{marginBottom: 20}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: 10,
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate('LookUser', item)}>
+                    <LinearGradient
+                      colors={['white', 'blue', 'red', 'navy', 'yellow', 'red']}
+                      start={{x: 0.0, y: 1.0}}
+                      end={{x: 1.0, y: 1.0}}
+                      style={{
+                        borderRadius: 100,
+                        height: 72,
+                        width: 72,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Image
+                        source={{uri: item.profil}}
+                        style={[styles.profil, {height: 65, width: 65}]}
+                      />
+                    </LinearGradient>
+                  </TouchableOpacity>
+                  <Text style={{left: 20}}>{item.name}</Text>
+                </View>
+                <Icons
+                  type={'Entypo'}
+                  name={'dots-three-vertical'}
+                  color={'black'}
+                  size={20}
+                />
+              </View>
+              <Image
+                source={{uri: item.status.image}}
+                style={{height: 400, width: '100%', resizeMode: 'stretch'}}
+              />
+            </View>
+          );
+        })}
       </ScrollView>
     </View>
   );

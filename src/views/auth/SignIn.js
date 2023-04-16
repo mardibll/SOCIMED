@@ -41,7 +41,7 @@ export default function SignIn({navigation}) {
       <Buttons
         title={'Sign In'}
         styleBtn={{width: '85%'}}
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => navigation.navigate('TabNav')}
       />
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <Texts style={{color: '#6D6D6D', fontSize: 13}}>
