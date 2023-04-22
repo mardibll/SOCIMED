@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "262706203213",
+    "project_id": "socimed-d8910",
+    "storage_bucket": "socimed-d8910.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262706203213:android:c0dc4e49dc1dc609cc2a04",
+        "android_client_info": {
+          "package_name": "com.socimed"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "262706203213-jc11gr7q132bjb2vnhkofh7reb5pr55q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.socimed",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "262706203213-9hqsuct7j2asdfobhlm55gpr958p53n2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgkUrXVejemLOOB5YucQNT86AG5d1Rmgo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "262706203213-9hqsuct7j2asdfobhlm55gpr958p53n2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

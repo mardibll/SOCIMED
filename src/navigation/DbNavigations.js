@@ -1,4 +1,5 @@
 import AddPosting from '../views/addPosting';
+
 import SignIn from '../views/auth/SignIn';
 import SignupChoice from '../views/auth/SignupChoice';
 import Home from '../views/home';
